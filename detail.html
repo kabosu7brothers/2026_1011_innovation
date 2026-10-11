@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>詳細</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; max-width: 800px; }
+        dt { font-weight: bold; margin-top: 15px; }
+        dd { margin: 5px 0 0 0; white-space: pre-wrap; }
+        .error { color: #c00; }
+    </style>
+</head>
+<body>
+    <h1>詳細</h1>
+
+    <p id="error" class="error" hidden></p>
+    <dl id="content" hidden>
+        <dt>タイトル</dt><dd id="title"></dd>
+        <dt>地域(都道府県)</dt><dd id="area"></dd>
+        <dt>詳細</dt><dd id="detail"></dd>
+    </dl>
+
+    <p>
+        <button type="button" onclick="window.close()">このタブを閉じる</button>
+        ／ <a href="./search.html">検索画面へ</a>
+    </p>
+
+    <script>
+        (async function () {
+            const params  = new URLSearchParams(location.search);
+            const errorEl = document.getElementById('error');
+
+            function showError(text) {
+                errorEl.textContent = text;
+                errorEl.hidden = false;
+            }
+
+            if (!params.has('id')) {
+                showError('表示するデータが指定されていません。');
+                return;
+            }
+
+            let data;
+            try {
+                const res = await fetch('./search.php?id=' + encodeURIComponent(params.get('id')));
+                data = await res.json();
+            } catch (e) {
+                showError('サーバーに接続できませんでした。php -S で起動したアドレス（http://localhost:8000/）から開いているか確認してください。');
+                return;
+            }
+            if (data.error) {
+                showError(data.error);
+                return;
+            }
+
+            document.getElementById('title').textContent  = data.row.title;
+            document.getElementById('area').textContent   = data.row.area;
+            document.getElementById('detail').textContent = data.row.detail;
+            document.getElementById('content').hidden = false;
+        })();
+    </script>
+</body>
+</html>

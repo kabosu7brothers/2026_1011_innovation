@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>データベーステスト</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; }
+        form > div { margin-bottom: 10px; }
+        .ok { color: #070; }
+        .error { color: #c00; }
+    </style>
+</head>
+<body>
+    <h1>BIO Watchにようこそ!</h1>
+    <p><a href="./search.html">検索画面へ</a></p>
+
+    <form id="save-form">
+        <div>タイトル
+            <input type="text" name="title">
+        </div>
+        <div>地域(都道府県)
+            <input type="text" name="area">
+        </div>
+        <div>詳細</div>
+        <textarea id="text1" name="text1" rows="10" cols="100" placeholder="ここに詳細な内容を記入してください。"></textarea>
+        <div>入力を確定しますか？
+            <button type="submit">確定</button>
+        </div>
+    </form>
+
+    <p id="message"></p>
+
+    <script>
+        const form    = document.getElementById('save-form');
+        const message = document.getElementById('message');
+
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            message.className = '';
+            message.textContent = '保存中...';
+
+            let data;
+            try {
+                const res = await fetch('./save.php', { method: 'POST', body: new FormData(form) });
+                data = await res.json();
+            } catch (err) {
+                message.className = 'error';
+                message.textContent = 'サーバーに接続できませんでした。php -S で起動したアドレス（http://localhost:8000/）から開いているか確認してください。';
+                return;
+            }
+
+            if (data.error) {
+                message.className = 'error';
+                message.textContent = data.error;
+                return;
+            }
+            message.className = 'ok';
+            message.textContent = data.message;
+            form.reset();
+        });
+    </script>
+</body>
+</html>

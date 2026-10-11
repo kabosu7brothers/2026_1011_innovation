@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>データ検索</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; }
+        form div { margin-bottom: 10px; }
+        table { border-collapse: collapse; width: 100%; margin-top: 15px; }
+        th, td { border: 1px solid #999; padding: 6px 10px; text-align: left; vertical-align: top; }
+        th { background: #eee; }
+        td.detail { white-space: pre-wrap; }
+        .error { color: #c00; }
+    </style>
+</head>
+<body>
+    <h1>BIO Watch データ検索</h1>
+
+    <form id="search-form">
+        <div>キーワード（タイトル・地域・詳細）
+            <input type="text" name="keyword" id="keyword">
+        </div>
+        <div>地域(都道府県)
+            <input type="text" name="area" id="area">
+        </div>
+        <div>
+            <button type="submit">検索</button>
+            <a href="#" id="clear">条件クリア</a>
+            ／ <a href="./test_index.html">入力画面へ</a>
+        </div>
+    </form>
+
+    <p id="message"></p>
+    <div id="result"></div>
+
+    <script>
+        const form    = document.getElementById('search-form');
+        const message = document.getElementById('message');
+        const result  = document.getElementById('result');
+
+        function showError(text) {
+            message.className = 'error';
+            message.textContent = text;
+            result.replaceChildren();
+        }
+
+        async function search() {
+            const params = new URLSearchParams(new FormData(form));
+            message.className = '';
+            message.textContent = '検索中...';
+
+            let data;
+            try {
+                const res = await fetch('./search.php?' + params.toString());
+                data = await res.json();
+            } catch (e) {
+                showError('サーバーに接続できませんでした。php -S で起動したアドレス（http://localhost:8000/）から開いているか確認してください。');
+                return;
+            }
+            if (data.error) {
+                showError(data.error);
+                return;
+            }
+
+            message.textContent = data.records.length + ' 件見つかりました。';
+            result.replaceChildren();
+            if (data.records.length === 0) return;
+
+            const table = document.createElement('table');
+            const head = table.insertRow();
+            ['タイトル', '地域', '詳細'].forEach(function (t) {
+                const th = document.createElement('th');
+                th.textContent = t;
+                head.appendChild(th);
+            });
+
+            data.records.forEach(function (r) {
+                const tr = table.insertRow();
+
+                const a = document.createElement('a');
+                a.href = './detail.html?id=' + r.id;
+                a.target = '_blank';
+                a.rel = 'noopener';
+                a.textContent = r.title !== '' ? r.title : '(無題)';
+                tr.insertCell().appendChild(a);
+
+                tr.insertCell().textContent = r.area;
+
+                const detail = tr.insertCell();
+                detail.className = 'detail';
+                detail.textContent = r.detail;
+            });
+            result.appendChild(table);
+        }
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            search();
+        });
+
+        document.getElementById('clear').addEventListener('click', function (e) {
+            e.preventDefault();
+            form.reset();
+            search();
+        });
+
+        // 画面を開いた時点で全件を表示する
+        search();
+    </script>
+</body>
+</html>
