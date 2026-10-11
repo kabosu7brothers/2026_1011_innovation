@@ -26,9 +26,9 @@
         ／ <a href="./search.html">検索画面へ</a>
     </p>
 
+    <script src="./csv.js"></script>
     <script>
-        (async function () {
-            const params  = new URLSearchParams(location.search);
+        (function () {
             const errorEl = document.getElementById('error');
 
             function showError(text) {
@@ -36,28 +36,25 @@
                 errorEl.hidden = false;
             }
 
-            if (!params.has('id')) {
+            const idText = new URLSearchParams(location.search).get('id');
+            if (idText === null || !/^\d+$/.test(idText)) {
                 showError('表示するデータが指定されていません。');
                 return;
             }
 
-            let data;
-            try {
-                const res = await fetch('./search.php?id=' + encodeURIComponent(params.get('id')));
-                data = await res.json();
-            } catch (e) {
-                showError('サーバーに接続できませんでした。php -S で起動したアドレス（http://localhost:8000/）から開いているか確認してください。');
-                return;
-            }
-            if (data.error) {
-                showError(data.error);
-                return;
-            }
-
-            document.getElementById('title').textContent  = data.row.title;
-            document.getElementById('area').textContent   = data.row.area;
-            document.getElementById('detail').textContent = data.row.detail;
-            document.getElementById('content').hidden = false;
+            loadRows().then(function (rows) {
+                const row = rows[Number(idText)];
+                if (!row) {
+                    showError('該当するデータが見つかりませんでした。');
+                    return;
+                }
+                document.getElementById('title').textContent  = row.title;
+                document.getElementById('area').textContent   = row.area;
+                document.getElementById('detail').textContent = row.detail;
+                document.getElementById('content').hidden = false;
+            }).catch(function () {
+                showError('CSVファイルを読み込めませんでした。サーバー経由（GitHub Pagesの公開アドレスなど）で開いているか確認してください。');
+            });
         })();
     </script>
 </body>

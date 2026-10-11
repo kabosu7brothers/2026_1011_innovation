@@ -27,17 +27,19 @@
         <div>
             <button type="submit">検索</button>
             <a href="#" id="clear">条件クリア</a>
-            ／ <a href="./test_index.html">入力画面へ</a>
+            ／ <a href="./index.html">入力画面へ</a>
         </div>
     </form>
 
     <p id="message"></p>
     <div id="result"></div>
 
+    <script src="./csv.js"></script>
     <script>
         const form    = document.getElementById('search-form');
         const message = document.getElementById('message');
         const result  = document.getElementById('result');
+        let allRows = null;
 
         function showError(text) {
             message.className = 'error';
@@ -45,27 +47,21 @@
             result.replaceChildren();
         }
 
-        async function search() {
-            const params = new URLSearchParams(new FormData(form));
+        function render() {
+            const keyword = form.keyword.value.trim();
+            const area    = form.area.value.trim();
+
+            const hits = [];
+            allRows.forEach(function (row, i) {
+                if (area !== '' && !contains(row.area, area)) return;
+                if (keyword !== '' && !(contains(row.title, keyword) || contains(row.area, keyword) || contains(row.detail, keyword))) return;
+                hits.push({ id: i, row: row });
+            });
+
             message.className = '';
-            message.textContent = '検索中...';
-
-            let data;
-            try {
-                const res = await fetch('./search.php?' + params.toString());
-                data = await res.json();
-            } catch (e) {
-                showError('サーバーに接続できませんでした。php -S で起動したアドレス（http://localhost:8000/）から開いているか確認してください。');
-                return;
-            }
-            if (data.error) {
-                showError(data.error);
-                return;
-            }
-
-            message.textContent = data.records.length + ' 件見つかりました。';
+            message.textContent = hits.length + ' 件見つかりました。';
             result.replaceChildren();
-            if (data.records.length === 0) return;
+            if (hits.length === 0) return;
 
             const table = document.createElement('table');
             const head = table.insertRow();
@@ -75,38 +71,44 @@
                 head.appendChild(th);
             });
 
-            data.records.forEach(function (r) {
+            hits.forEach(function (h) {
                 const tr = table.insertRow();
 
                 const a = document.createElement('a');
-                a.href = './detail.html?id=' + r.id;
+                a.href = './detail.html?id=' + h.id;
                 a.target = '_blank';
                 a.rel = 'noopener';
-                a.textContent = r.title !== '' ? r.title : '(無題)';
+                a.textContent = h.row.title !== '' ? h.row.title : '(無題)';
                 tr.insertCell().appendChild(a);
 
-                tr.insertCell().textContent = r.area;
+                tr.insertCell().textContent = h.row.area;
 
                 const detail = tr.insertCell();
                 detail.className = 'detail';
-                detail.textContent = r.detail;
+                detail.textContent = h.row.detail;
             });
             result.appendChild(table);
         }
 
         form.addEventListener('submit', function (e) {
             e.preventDefault();
-            search();
+            if (allRows) render();
         });
 
         document.getElementById('clear').addEventListener('click', function (e) {
             e.preventDefault();
             form.reset();
-            search();
+            if (allRows) render();
         });
 
-        // 画面を開いた時点で全件を表示する
-        search();
+        // 画面を開いた時点でCSVを読み込み、全件を表示する
+        message.textContent = '読み込み中...';
+        loadRows().then(function (rows) {
+            allRows = rows;
+            render();
+        }).catch(function () {
+            showError('CSVファイルを読み込めませんでした。GitHub Pagesの公開アドレス、または手元では http://localhost:8000/ のように、サーバー経由で開いているか確認してください。');
+        });
     </script>
 </body>
 </html>
