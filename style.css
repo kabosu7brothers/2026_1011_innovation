@@ -1,0 +1,89 @@
+body {
+    font-family: sans-serif;
+    margin: 0;
+    background: #F5F8F5;
+    color: #333;
+}
+
+header {
+    background: #2E7D32;
+    color: white;
+    padding: 30px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 36px;
+}
+
+main {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+button {
+    padding: 12px 24px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* 登録フォーム */
+#animalForm {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 40px;
+}
+
+#animalForm label {
+    display: block;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+#animalForm input,
+#animalForm textarea {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 6px;
+    padding: 10px;
+    font-size: 16px;
+    font-family: inherit;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+#message {
+    margin: 12px 0 0;
+}
+
+#message.success {
+    color: #2E7D32;
+}
+
+#message.error {
+    color: #C62828;
+}
+
+#animalList {
+    margin-top: 30px;
+}
+
+.animal {
+    background: white;
+    padding: 20px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+}
+
+.animal h3 {
+    margin-top: 0;
+}
