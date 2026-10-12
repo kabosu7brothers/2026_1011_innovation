@@ -1,53 +1,53 @@
-const SUPABASE_URL = "https://ksqauuhkeeavhavkhzch.supabase.co";
-const SUPABASE_KEY = "sb_publishable_TWsX9lEaok49Kwcrt_vOhg_LICb91sU";
+const SUPABASE_URL = "https://ksqauuhkeeavhavkhzch.supabase.co";//SupabaseのURL
+const SUPABASE_KEY = "sb_publishable_TWsX9lEaok49Kwcrt_vOhg_LICb91sU";//supabaseの公開鍵
 
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const animalList = document.getElementById("animalList");
-const animalForm = document.getElementById("animalForm");
+const animalList = document.getElementById("animalList");//出力用の変数。animallistはindex.html参照
+const animalForm = document.getElementById("animalForm");//動物登録用。()の中身は上と同様から参照
 const submitButton = document.getElementById("submitButton");
 const message = document.getElementById("message");
 
-// メッセージ表示(成功:緑 / 失敗:赤)
+// メッセージ表示(成功:緑 / 失敗:赤)、色はStyle.cssで変更可能
 function showMessage(text, isError = false) {
     message.textContent = text;
-    message.className = isError ? "error" : "success";
+    message.className = isError ? "error" : "success";//isError=trueの時、"error"が表示される仕組み
 }
 
-// 生物データを取得して表示
+// 生物データを取得して表示(view.htmlでの処理)
 async function loadAnimals() {
-    const { data, error } = await supabaseClient
-        .from("animal")
-        .select("*");
+    const { data, error } = await supabaseClient//await=この処理が終わるまで待って！
+        .from("animal")//どのデータベースから？→animal
+        .select("*");//どれを選ぶの？→*(全部)
 
-    if (error) {
+    if (error) {//エラーが出たら？
         console.error(error);
         alert("データ取得に失敗しました: " + error.message);
         return;
     }
 
-    animalList.innerHTML = "";
+    animalList.innerHTML = "";//html上のアイテムを取得
 
     if (data.length === 0) {
         animalList.textContent = "データが0件です(RLSの設定を確認してください)";
         return;
     }
 
-    data.forEach(animal => {
-        const div = document.createElement("div");
+    data.forEach(animal => {//animal要素にそれぞれ処理を行う
+        const div = document.createElement("div");//タグ生成
         div.className = "animal";
 
         // textContentを使い、入力された文字がHTMLとして実行されないようにする
-        const title = document.createElement("h3");
-        title.textContent = animal.name;
+        const title = document.createElement("h3");//タグ生成
+        title.textContent = animal.name;//<h3>動物の名前</h3>←こんな感じになる
 
-        const area = document.createElement("p");
-        area.textContent = "地域:" + animal.area;
+        const area = document.createElement("p");//タグ生成
+        area.textContent = "地域:" + animal.area;//<p>地域：地域の名前</p>←こんな感じになる
 
-        const description = document.createElement("p");
-        description.textContent = animal.description ?? "";
+        const description = document.createElement("p");//タグ生成
+        description.textContent = animal.description ?? "";//<p>詳細の文章</p>←こんな感じになる
 
-        div.append(title, area, description);
+        div.append(title, area, description);//以上の要素をview.htmlで表示するanimallistに追加
         animalList.appendChild(div);
     });
 }
