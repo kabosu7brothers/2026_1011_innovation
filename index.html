@@ -14,21 +14,21 @@
     </header>
     <main>
         <h2>生物を登録する</h2>
-        <form id="animalForm">
+        <form id="animalForm"><!入力フォーム>
             <label>
                 名前(必須)
-                <input type="text" id="nameInput" required>
+                <input type="text" id="nameInput" required><!テキスト入力欄。requiredで入力必須にできる>
             </label>
             <label>
                 地域(必須)
-                <input type="text" id="areaInput" required>
+                <input type="text" id="areaInput" required><!テキスト入力欄。requiredで入力必須にできる>
             </label>
             <label>
                 説明
-                <textarea id="descriptionInput" rows="3"></textarea>
+                <textarea id="descriptionInput" rows="3"></textarea><!長文テキスト入力欄。rows=行数。>
             </label>
             <button type="submit" id="submitButton">登録する</button>
-            <p id="message"></p>
+            <p id="message"></p><!id=メッセージとして登録された文字が表示される>
         </form>
 
         <h2>生物一覧</h2>
@@ -39,7 +39,7 @@
             <!-- ここにSupabaseのデータが表示されます -->
         </div>
     </main>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><!SupabaseのURL>
     <script src="script.js"></script>
 </body>
 </html>
