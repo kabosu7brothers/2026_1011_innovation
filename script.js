@@ -90,7 +90,7 @@ async function addAnimal(event) {
 }
 
 // イベント登録
-
+//index.htmlでの処理
 if (animalForm) {
     animalForm.addEventListener("submit", addAnimal);
 }
