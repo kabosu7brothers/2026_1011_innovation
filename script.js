@@ -90,5 +90,17 @@ async function addAnimal(event) {
 }
 
 // イベント登録
-animalForm.addEventListener("submit", addAnimal);
-document.getElementById("loadButton").addEventListener("click", loadAnimals);
+
+if (animalForm) {
+    animalForm.addEventListener("submit", addAnimal);
+}
+
+// 読み込みボタンが存在する画面（view.html）の場合
+if (loadButton) {
+    loadButton.addEventListener("click", loadAnimals);
+}
+
+// 閲覧画面（view.html）を開いたときに自動でデータを取得・表示する
+if (animalList && !animalForm) {
+    document.addEventListener("DOMContentLoaded", loadAnimals);
+}
