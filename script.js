@@ -99,8 +99,3 @@ if (animalForm) {
 if (loadButton) {
     loadButton.addEventListener("click", loadAnimals);
 }
-
-// 閲覧画面（view.html）を開いたときに自動でデータを取得・表示する
-if (animalList && !animalForm) {
-    document.addEventListener("DOMContentLoaded", loadAnimals);
-}
