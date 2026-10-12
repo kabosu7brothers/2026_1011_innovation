@@ -8,7 +8,7 @@ const animalForm = document.getElementById("animalForm");//動物登録用。()�
 const submitButton = document.getElementById("submitButton");
 const message = document.getElementById("message");
 
-// メッセージ表示(成功:緑 / 失敗:赤)、色はStyle.cssで変更可能
+// メッセージ表示(成功:緑 / 失敗:赤)、色や大きさはStyle.cssで変更可能
 function showMessage(text, isError = false) {
     message.textContent = text;
     message.className = isError ? "error" : "success";//isError=trueの時、"error"が表示される仕組み
