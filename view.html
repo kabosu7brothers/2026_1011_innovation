@@ -1,1 +1,28 @@
-<!>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIOWatch</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <h1>BIOWatch</h1>
+        <p>生物多様性を知り、つなげ、未来のアイデアへ</p>
+    </header>
+    <main>
+        <a href="./index.html">入力画面へ</a>
+        <h2>生物一覧</h2>
+        <button id="loadButton">
+            生物データを読み込む
+        </button>
+        <div id="animalList">
+            <!-- ここにSupabaseのデータが表示されます -->
+        </div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><!SupabaseのURL>
+    <script src="script.js"></script>
+</body>
+</html>
