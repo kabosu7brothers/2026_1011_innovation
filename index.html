@@ -13,6 +13,7 @@
         <p>生物多様性を知り、つなげ、未来のアイデアへ</p>
     </header>
     <main>
+        <a href="./view.html">出力画面へ</a>
         <h2>生物を登録する</h2>
         <form id="animalForm"><!入力フォーム>
             <label>
@@ -30,14 +31,6 @@
             <button type="submit" id="submitButton">登録する</button>
             <p id="message"></p><!id=メッセージとして登録された文字が表示される>
         </form>
-
-        <h2>生物一覧</h2>
-        <button id="loadButton">
-            生物データを読み込む
-        </button>
-        <div id="animalList">
-            <!-- ここにSupabaseのデータが表示されます -->
-        </div>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><!SupabaseのURL>
     <script src="script.js"></script>
